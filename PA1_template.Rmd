@@ -17,54 +17,53 @@ tail(data,5)
 
 
 ## What is mean total number of steps taken per day?
-This step can be achieved by splitting the dataframe according to day and calculating the mean of the dataframe.
-There are dates where we have NA for all the observation calculating mean of such an array leads to NaN. Thus there are NaN entries that corresponds to a day with all the entries being NA.
-```{r meansteps}
-steps_pd<-split(data$steps,as.Date(data$date))
-meanstep_pd<-sapply(steps_pd,mean,na.rm=TRUE)
-totalstep_pd<-sapply(steps_pd, sum,na.rm=TRUE)
+To start with we omit all the data that has NA.
+To get a number of total steps taken per day we split the data frame according to date and sum all the step taken in one day. Once this step is done we have total number of steps for each day. We can plot histogram for this and we will get a distribution of total number of steps taken every day. Someday we have more steps and some day we have less.
+
+
+```{r meansteps,output='asis'}
+datana_ignore<-data[!is.na(data),]
+
+steps_pd<-split(datana_ignore$steps,as.Date(datana_ignore$date))
+
+# total step per day.
+totalstep_pd<-sapply(steps_pd, sum)
+
 hist(totalstep_pd,breaks=20,main='Total number of Steps per day')
 
-median(steps_pd[[2]])
-```
+# rounding off the result to two decimal places
+meanstep<-round(mean(totalstep_pd),2)
+print(c("meanstep:",meanstep))
 
+medianstep<-median(totalstep_pd)
+print(c("mediansteps:",medianstep))
+
+```
+Using this we can calculate the mean and median of total number of steps taken in a day. The mean number of steps taken in a day is  `r trunc(meanstep,2)` . The median of the distribution of steps taken in a day is `r medianstep`.
 
 
 ## What is the average daily activity pattern?
+To guess the average daily activity pattern we plot time averaged steps for the entire duration for each 5 mins interval.
+```{r }
+split_data<-split(data$steps,data$interval)
+plot(sapply(split_data,mean,na.rm=TRUE),type="l",xlab='Interval',ylab='Average number of steps',main='Average number of steps vs Interval')
 
+max_activity<-which.max(sapply(split_data,mean,na.rm=TRUE))
+```
+
+We can see initially the value is zero since it is mid night and people are not active during night time. We can use which.max function to find out the period at which activity is really high. The activity is really high at `r max_activity`th interval. This correspond to  morning around 8:40 AM may be a lot of people are going to work.
 
 
 
 ## Imputing missing values
 
+```{r}
+n_missing<-sum(is.na(data))
+n_missing
+```
+The total number of rows with NA is `r n_missing`.
 
-The data contains NA values to ensure we can carry out or analysis we need to impute these values. A very sensible and educated approach towards imputing those values should be to use mean (if there are no outliers in the data) or median (if there are outliers in the data).
-The total number of rows with NA is .
-
-
-#```{r imputation}
-#steps_pd<-split(data$steps,as.Date(data$date))
-#meanstep_pd<-sapply(steps_pd,mean,na.rm=TRUE)
-#meanstep_pd[meanstep_pd=='NaN']=0
-#imputed_data<-data
-
-#for (j in names(meanstep_pd)){
-#    imputed_data[imputed_data$date==j,'steps']=ifelse(is.na(imputed_d#ata[imputed_data$date==j,'steps']),meanstep_pd[j],0)
-    #print(imputed_data[imputed_data$date==j,'steps'])
-    #if (is.na(imputed_data[imputed_data$date==j,'steps'])){
-    #    imputed_data[imputed_data$date==j,'steps']<-meanstep_pd[j]
-    #}
-    #
-#}
-
-#imputed_data
-#```
-#```{r}
-#X='NA'
-#X<-ifelse(is.na(X),1,0)
-#X
-#```
-
+  
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
