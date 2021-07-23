@@ -7,10 +7,26 @@ output:
 
 
 ## Loading and preprocessing the data
+The data is compressed in a zip file to load data into a datatable first I unzip the file and read the unzipped csv file in a datatable data. 
 
+```{r loadfile,cache=TRUE}
+data<-read.csv(unz('activity.zip','activity.csv'),header=T)
+head(data,5)
+tail(data,5)
+```
 
 
 ## What is mean total number of steps taken per day?
+This step can be achieved by splitting the dataframe according to day and calculating the mean of the dataframe.
+There are dates where we have NA for all the observation calculating mean of such an array leads to NaN. Thus there are NaN entries that corresponds to a day with all the entries being NA.
+```{r meansteps}
+steps_pd<-split(data$steps,as.Date(data$date))
+meanstep_pd<-sapply(steps_pd,mean,na.rm=TRUE)
+totalstep_pd<-sapply(steps_pd, sum,na.rm=TRUE)
+hist(totalstep_pd,breaks=20,main='Total number of Steps per day')
+
+median(steps_pd[[2]])
+```
 
 
 
@@ -18,7 +34,36 @@ output:
 
 
 
+
 ## Imputing missing values
+
+
+The data contains NA values to ensure we can carry out or analysis we need to impute these values. A very sensible and educated approach towards imputing those values should be to use mean (if there are no outliers in the data) or median (if there are outliers in the data).
+The total number of rows with NA is .
+
+
+#```{r imputation}
+#steps_pd<-split(data$steps,as.Date(data$date))
+#meanstep_pd<-sapply(steps_pd,mean,na.rm=TRUE)
+#meanstep_pd[meanstep_pd=='NaN']=0
+#imputed_data<-data
+
+#for (j in names(meanstep_pd)){
+#    imputed_data[imputed_data$date==j,'steps']=ifelse(is.na(imputed_d#ata[imputed_data$date==j,'steps']),meanstep_pd[j],0)
+    #print(imputed_data[imputed_data$date==j,'steps'])
+    #if (is.na(imputed_data[imputed_data$date==j,'steps'])){
+    #    imputed_data[imputed_data$date==j,'steps']<-meanstep_pd[j]
+    #}
+    #
+#}
+
+#imputed_data
+#```
+#```{r}
+#X='NA'
+#X<-ifelse(is.na(X),1,0)
+#X
+#```
 
 
 
