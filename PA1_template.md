@@ -89,7 +89,7 @@ print(c("mediansteps:",medianstep))
 ## [1] "mediansteps:" "10765"
 ```
 #### Mean and Median of total number of steps taken everyday.
-Using this we can calculate the mean and median of total number of steps taken in a day. The mean number of steps taken in a day is  1.0766\times 10^{4} . The median of the distribution of steps taken in a day is 10765.
+Using this we can calculate the mean and median of total number of steps taken in a day. The mean number of steps taken in a day is  1.0766\times 10^{4}. The median of the distribution of steps taken in a day is 10765.
 
 
 ## What is the average daily activity pattern?
